@@ -1,13 +1,17 @@
 import styles from './Button.module.scss';
 import clsx from 'clsx';
+import PropTypes from 'prop-types';
 
-interface Props {
-  className: string;
-  children: string | JSX.Element;
+const propTypes = {
+  className: PropTypes.string,
+  children: PropTypes.oneOfType([PropTypes.element, PropTypes.string]).isRequired,
 }
 
+type Props = PropTypes.InferProps<typeof propTypes>
+
 const Button: React.FC<Props> = ({className, children}) => {
-    return (<button className={clsx(styles.button, className)}>{children}</button>);
+  Button.propTypes = propTypes;
+  return (<button className={clsx(styles.button, className)}>{children}</button>);
 };
 
 export default Button;
