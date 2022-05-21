@@ -1,55 +1,54 @@
 import styles from './Product.module.scss';
-import clsx from 'clsx';
-import Button from '../Button/Button';
+import ProductImage from '../ProductImage/ProductImage';
+import ProductForm from '../ProductForm/ProductForm';
+import { useState } from 'react';
+import PropTypes from 'prop-types';
 
-interface Props {
-  id: number;
-  name: string;
-  title: string;
-  basePrice: number;
-  colors: string[];
-  sizes: {name: string, additionalPrice: number}[];
-}
+const propTypes = {
+  id: PropTypes.number.isRequired,
+  name: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  basePrice: PropTypes.number.isRequired,
+  colors: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
+  sizes: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      additionalPrice: PropTypes.number.isRequired,
+    }).isRequired).isRequired
+};
 
-const Product: React.FC<Props> = (props) => {
+type Props = PropTypes.InferProps<typeof propTypes>
+
+const Product: React.FC<Props> = ({title, basePrice, colors, sizes, name, id}) => {
+  Product.propTypes = propTypes;
+
+  const [currentColor, setCurrentColor] = useState(colors[0]);
+  const [currentSize, setCurrentSize] = useState(sizes[0].name);
+  const [currentAdditionalPrice, setCurrentAdditionalPrice] = useState(sizes[0].additionalPrice);
+
+  const getPrice = () => {
+    return basePrice + currentAdditionalPrice;
+  };
+
   return (
-    <article className={styles.product}>
-      <div className={styles.imageContainer}>
-        <img 
-          className={styles.image}
-          alt="Kodilla shirt"
-          src={`${process.env.PUBLIC_URL}/images/products/shirt-kodilla--black.jpg`} />
-      </div>
+    <article key={id} className={styles.product}>
+      <ProductImage currentColor={currentColor} name={name} title={title} />
       <div>
         <header>
-          <h2 className={styles.name}>Kodilla shirt</h2>
-          <span className={styles.price}>Price: 20$</span>
+          <h2 className={styles.name}>{title}</h2>
+          <span className={styles.price}>Price: {getPrice()}$</span>
         </header>
-        <form>
-          <div className={styles.sizes}>
-            <h3 className={styles.optionLabel}>Sizes</h3>
-            <ul className={styles.choices}>
-              <li><button type="button" className={styles.active}>S</button></li>
-              <li><button type="button">M</button></li>
-              <li><button type="button">L</button></li>
-              <li><button type="button">XL</button></li>
-            </ul>
-          </div>
-          <div className={styles.colors}>
-            <h3 className={styles.optionLabel}>Colors</h3>
-            <ul className={styles.choices}>
-              <li><button type="button" className={clsx(styles.colorBlack, styles.active)} /></li>
-              <li><button type="button" className={clsx(styles.colorRed)} /></li>
-              <li><button type="button" className={clsx(styles.colorWhite)} /></li>
-            </ul>
-          </div>
-          <Button className={styles.button}>
-            <span className="fa fa-shopping-cart" />
-          </Button>
-        </form>
+        <ProductForm
+          sizes={sizes}
+          title={title}
+          actions={[setCurrentAdditionalPrice, setCurrentColor, setCurrentSize, getPrice]}
+          currentSize={currentSize}
+          currentColor={currentColor}
+          colors={colors}
+        />
       </div>
     </article>
-  )
+  );
 };
 
 export default Product;

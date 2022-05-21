@@ -9,12 +9,8 @@ const Products: React.FC = () => {
     <section>
       {products.map((product) => (
         <Product
-          id={product.id}
-          name={product.name}
-          title={product.title}
-          colors={product.colors}
-          sizes={product.sizes}
-          basePrice={product.basePrice}
+          {...products[product.id - 1]}
+          key={product.id}
         />
       ))}
     </section>
