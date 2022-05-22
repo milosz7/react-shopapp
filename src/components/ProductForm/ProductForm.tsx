@@ -14,22 +14,23 @@ const propTypes = {
       additionalPrice: PropTypes.number.isRequired,
     }).isRequired).isRequired,
   colors: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
-  title: PropTypes.string.isRequired
+  title: PropTypes.string.isRequired,
+  price: PropTypes.number.isRequired
 }
 
 type Props = PropTypes.InferProps<typeof propTypes>
 
-const ProductForm: React.FC<Props> = ({title, currentSize, currentColor, sizes, colors, actions}) => {
+const ProductForm: React.FC<Props> = ({title, currentSize, currentColor, sizes, colors, actions, price}) => {
   ProductForm.propTypes = propTypes;
 
-  const [setCurrentAdditionalPrice, setCurrentColor, setCurrentSize, getPrice] = actions;
+  const [setCurrentAdditionalPrice, setCurrentColor, setCurrentSize] = actions;
 
   const processOrder = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Summary');
     console.log('===============');
     console.log('Name: ', title)
-    console.log('Price: ', getPrice());
+    console.log('Price: ', price);
     console.log('Size: ', currentSize);
     console.log('Color: ', currentColor);
   }

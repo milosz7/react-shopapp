@@ -1,7 +1,7 @@
 import styles from './Product.module.scss';
 import ProductImage from '../ProductImage/ProductImage';
 import ProductForm from '../ProductForm/ProductForm';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 const propTypes = {
@@ -26,9 +26,9 @@ const Product: React.FC<Props> = ({title, basePrice, colors, sizes, name, id}) =
   const [currentSize, setCurrentSize] = useState(sizes[0].name);
   const [currentAdditionalPrice, setCurrentAdditionalPrice] = useState(sizes[0].additionalPrice);
 
-  const getPrice = () => {
+  const fullPrice = useMemo(() => {
     return basePrice + currentAdditionalPrice;
-  };
+  }, [currentAdditionalPrice, basePrice]);
 
   return (
     <article key={id} className={styles.product}>
@@ -36,15 +36,16 @@ const Product: React.FC<Props> = ({title, basePrice, colors, sizes, name, id}) =
       <div>
         <header>
           <h2 className={styles.name}>{title}</h2>
-          <span className={styles.price}>Price: {getPrice()}$</span>
+          <span className={styles.price}>Price: {fullPrice}$</span>
         </header>
         <ProductForm
           sizes={sizes}
           title={title}
-          actions={[setCurrentAdditionalPrice, setCurrentColor, setCurrentSize, getPrice]}
+          actions={[setCurrentAdditionalPrice, setCurrentColor, setCurrentSize]}
           currentSize={currentSize}
           currentColor={currentColor}
           colors={colors}
+          price={fullPrice}
         />
       </div>
     </article>
